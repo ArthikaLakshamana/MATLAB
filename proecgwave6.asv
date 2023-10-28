@@ -1,0 +1,34 @@
+% Load your ECG signal data (replace 'ecg_signal.mat' with your file)
+load('100m.mat'); 
+
+% Define the sampling frequency and time vector
+Fs = 1000; % Replace with your actual sampling frequency
+t = (0:length('100m.mat')-1) / Fs;
+
+% Apply a bandpass filter to the ECG signal to retain the QRS complex
+low_cutoff = 0.5; % Low-frequency cutoff in Hz
+high_cutoff = 50; % High-frequency cutoff in Hz
+n = 2; % Filter order (you can adjust this)
+Wn = [low_cutoff, high_cutoff] / (Fs / 2); % Normalize cutoff frequencies
+[b, a] = butter(n, Wn, 'bandpass');
+t = filter(b,a,Fs);
+t = filter(b,a,t,Wn); 
+t = filter(b,a,t,Wn,high_cutoff);
+[t,low_cutoff]=filter(b, a, '100m.mat');
+
+
+% Plot the original and filtered ECG signals.
+figure;
+subplot(2,1,1);
+plot(t, ecg_signal);
+title('Original ECG Signal');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
+
+subplot(2,1,2);
+plot(t, filtered_ecg);
+title('Filtered ECG Signal');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
